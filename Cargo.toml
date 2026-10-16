@@ -1,0 +1,11 @@
+[package]
+name = "random"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+opencv = "0.101.0"
+sha2 = "0.11.0"
+hex-literal = "1.1.0"
+hex = "0.4.3"
+rand_chacha = "0.10.0"
