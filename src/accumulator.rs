@@ -1,14 +1,18 @@
 use super::entropy_pool::EntropyPool;
 
 #[derive(Debug)]
-pub struct Fortuna {
+pub struct Accumulator {
     pools: [EntropyPool; 32],
 }
 
-impl Fortuna {
+impl Accumulator {
     pub fn new() -> Self {
-        Fortuna {
+        Accumulator {
             pools: [EntropyPool::new(); 32],
         }
+    }
+
+    pub fn seed(&self) -> [u8; 64] {
+        self.pools[0].state
     }
 }
