@@ -1,6 +1,6 @@
 use rand_chacha::{
     ChaCha20Rng,
-    rand_core::{Rng, SeedableRng, TryRng},
+    rand_core::{Rng, SeedableRng, TryCryptoRng, TryRng},
 };
 use sha2::{Digest, Sha256};
 use std::convert::Infallible;
@@ -10,6 +10,8 @@ pub struct Generator {
     rng: ChaCha20Rng,
     pub seeded: bool,
 }
+
+const MAX_REQUEST_BYTES: usize = 1 << 20; // 2^20 -> 1Mb
 
 impl Generator {
     pub fn new() -> Self {
@@ -38,6 +40,10 @@ impl Generator {
     pub fn fill_bytes(&mut self, dst: &mut [u8]) {
         if !self.seeded {
             panic!("Generator is not seeded yet!");
+        }
+
+        if dst.len() > MAX_REQUEST_BYTES {
+            panic!("Not more data than 1Mb allowed!")
         }
 
         match self.rng.try_fill_bytes(dst) {
@@ -85,3 +91,5 @@ impl SeedableRng for Generator {
         Generator { rng, seeded: true }
     }
 }
+
+impl TryCryptoRng for Generator {}
