@@ -3,7 +3,7 @@ use opencv::{
     highgui::{self, wait_key},
     videoio::{self, VideoCaptureTrait, VideoCaptureTraitConst},
 };
-use random::entropy_pool::EntropyPool;
+use fortuna::entropy_pool::EntropyPool;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
