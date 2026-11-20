@@ -14,7 +14,7 @@ impl EntropyPool {
         }
     }
 
-    pub fn mix(&mut self, input: &[u8]) {
+    pub fn mix(&mut self, input: &str) { // Not sure yet if I should use &str or &[u8].
         let mut hasher = Sha256::new();
 
         hasher.update(self.state);

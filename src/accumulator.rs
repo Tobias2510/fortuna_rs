@@ -11,6 +11,8 @@ const MIN_POOL_SIZE: usize = 16; // 128 / 8 = 16
 #[derive(Debug)]
 pub enum AccumulatorError {
     NotSeeded,
+    InvalidData,
+    InvalidIndex,
 }
 
 impl fmt::Display for AccumulatorError {
@@ -18,6 +20,12 @@ impl fmt::Display for AccumulatorError {
         match self {
             AccumulatorError::NotSeeded => {
                 write!(f, "Accumulator is not seeded!")
+            }
+            AccumulatorError::InvalidData => {
+                write!(f, "The provided data is invalid!")
+            }
+            AccumulatorError::InvalidIndex => {
+                write!(f, "The provided index is invalid!")
             }
         }
     }
@@ -80,6 +88,26 @@ impl Accumulator {
         }
 
         self.generator.fill_bytes(dst);
+        Ok(())
+    }
+
+    pub fn add_event(
+        &mut self,
+        source_num: u8,
+        pool_num: u8,
+        data: &str,
+    ) -> Result<(), AccumulatorError> {
+        if data.is_empty() || data.len() > 32 {
+            return Err(AccumulatorError::InvalidData);
+        }
+        if pool_num as usize >= self.pools.len() {
+            return Err(AccumulatorError::InvalidIndex);
+        }
+
+        let data_length = data.len();
+
+        let event_data = format!("{source_num}|{data_length}|{data}");
+        self.pools[pool_num as usize].mix(&event_data);
         Ok(())
     }
 }
